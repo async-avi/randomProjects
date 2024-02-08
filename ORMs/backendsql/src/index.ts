@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
 import { connectDB } from "./db/db";
 import { getAllCourses } from "./utils/get-courses";
-import { signUpUser } from "./utils/sign-up";
+import { signUpUser } from "./utils/users/sign-up";
+import { createAdmin } from "./utils/admin/admin-sign-up";
 
 const app = express();
 const PORT = 3000;
@@ -16,15 +17,22 @@ app.get("/", async (req: Request, res: Response) => {
 
 // POST endpoint
 app.post("/signup", async (req: Request, res: Response) => {
+  const newUser = await signUpUser(req.body.email, req.body.password);
+  res.json(newUser);
+});
+
+// admin signUp
+
+app.post("/admin/signup", async (req: Request, res: Response) => {
   try {
-    const newUser = await signUpUser(req.body.email, req.body.password);
+    const newAdmin = await createAdmin(req.body.email, req.body.password);
     res.json({
-      msg: "User created successfully",
-      userId: newUser,
+      msg: "Admin created successfully",
+      userId: newAdmin,
     });
   } catch (error) {
     res.json({
-      error: "Username already in use",
+      error: "Email already in use as Admin",
     });
   }
 });
