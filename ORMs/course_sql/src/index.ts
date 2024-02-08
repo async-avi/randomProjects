@@ -1,14 +1,13 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
-import { connectDB } from "./db/db";
+import { client, connectDB } from "./db/db";
 import { getAllCourses } from "./utils/get-courses";
 import { signUpUser } from "./utils/users/sign-up";
 import { createAdmin } from "./utils/admin/admin-sign-up";
-import { logPass } from "./constants/constants";
 
 const app = express();
 const PORT = process.env.PORT;
-export const secret = process.env.SECRET;
+export const secret: string | undefined = process.env.SECRET;
 
 dotenv.config();
 
@@ -31,6 +30,25 @@ app.post("/signup", async (req: Request, res: Response) => {
 app.post("/admin/signup", async (req: Request, res: Response) => {
   const newAdmin = await createAdmin(req.body.email, req.body.password);
   res.json(newAdmin);
+});
+
+//admin signIn
+
+app.post("/courses", async (req: Request, res: Response) => {
+  const adminEmail = req.headers["email"] as string;
+  try {
+    await client.course.create({
+      data: {
+        title: req.body.title,
+        description: req.body.description,
+        author: {
+          connect: {
+            email: adminEmail,
+          },
+        },
+      },
+    });
+  } catch (error) {}
 });
 
 // Start the server

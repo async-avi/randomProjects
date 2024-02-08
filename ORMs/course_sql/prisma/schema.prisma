@@ -10,22 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  password String 
-  coursePurchased Course[]
-}
+// model User {
+//   id    Int     @id @default(autoincrement())
+//   email String  @unique
+//   password String 
+//   coursePurchased Course[]
+// }
 
 model Course{
   id        Int     @id @default(autoincrement())
   title     String
   description String
-  published Boolean @default(false)
-  author    Admin   @relation(fields: [authorId], references: [id])
-  authorId  Int
-  purchase User @relation(fields: [purchasedById], references: [id])
-  purchasedById Int 
+  author    Admin   @relation(fields: [authorEmail], references: [email])
+  authorEmail  String
 }
 
 model Admin{
