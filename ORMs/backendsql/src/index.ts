@@ -24,17 +24,8 @@ app.post("/signup", async (req: Request, res: Response) => {
 // admin signUp
 
 app.post("/admin/signup", async (req: Request, res: Response) => {
-  try {
-    const newAdmin = await createAdmin(req.body.email, req.body.password);
-    res.json({
-      msg: "Admin created successfully",
-      userId: newAdmin,
-    });
-  } catch (error) {
-    res.json({
-      error: "Email already in use as Admin",
-    });
-  }
+  const newAdmin = await createAdmin(req.body.email, req.body.password);
+  res.json(newAdmin);
 });
 
 // Start the server
