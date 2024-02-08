@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { connectDB } from "./db/db";
 import { getAllCourses } from "./utils/get-courses";
+import { signUpUser } from "./utils/sign-up";
 
 const app = express();
 const PORT = 3000;
@@ -14,15 +15,18 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 // POST endpoint
-app.post("/post", (req: Request, res: Response) => {
-  const { message } = req.body;
-  if (!message) {
-    return res
-      .status(400)
-      .json({ error: "Message is required in the request body" });
+app.post("/signup", async (req: Request, res: Response) => {
+  try {
+    const newUser = await signUpUser(req.body.email, req.body.password);
+    res.json({
+      msg: "User created successfully",
+      userId: newUser,
+    });
+  } catch (error) {
+    res.json({
+      error: "Username already in use",
+    });
   }
-
-  res.json({ received: true, message });
 });
 
 // Start the server
