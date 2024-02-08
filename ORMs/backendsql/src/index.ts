@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { connectDB } from "./db/db";
+import { getAllCourses } from "./utils/get-courses";
 
 const app = express();
 const PORT = 3000;
@@ -7,8 +8,9 @@ const PORT = 3000;
 app.use(express.json());
 
 // GET endpoint
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello, this is a GET request!");
+app.get("/", async (req: Request, res: Response) => {
+  const courses = await getAllCourses();
+  res.json(courses);
 });
 
 // POST endpoint
